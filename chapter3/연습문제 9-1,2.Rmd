@@ -1,23 +1,51 @@
 ---
 title: "exercise-1"
 author: "kim"
-date: '2021 4 21 '
+date: '2021 4 22 '
 output: html_document
 ---
 
-## 연습문제 9-1
+## 연습문제 90p - 1
 문제를 해결하시오.
 ```{r}
 x=c(1:5,6:10)
 x
 ```
-## 연습문제 9-2
+## 연습문제 90p - 2
 문제를 해결하시오.
 ```{r}
 x=c(1:10)
 x=x[x%%2==0]
 x
 ```
+## 연습문제 95p - 1
+```{r}
+Titanic
+plot(Titanic) # 성인 남성 crew 그룹이 생존율이 가장 높음
+```
+## 연습문제 95p - 2
+```{r}
+x = array(1:24, c(4,6))
+x<-x[,seq(1,6,2)]
+x
+```
+## 연습문제 104p - 1
+```{r}
+air2 <- na.omit(airquality)
+mean(air2$Ozone) #42.0991
+```
+## 연습문제 104p - 2
+```{r}
+name <- c('철수', '춘향', '길동')
+age <- c(22, 20, 25)
+gender <- factor(c('M', 'F', 'M'))
+blood_type <- factor(c('A', 'O', 'B'))
+
+patients<-data.frame(name, age, gender, blood_type)
+patients
+str(patients) #chr로 character형태로 되어있다. 철수, 춘향, 길동 등 한글로 표기를 하고있기 때문이다.
+```
+
 ## 단원문제 1
 문제를 해결하시오.
 ```{r}
@@ -35,13 +63,30 @@ intersect(x,y)
 sum(intersect(x,y))
 ```
 
-## 단원문제 4
+## 단원문제 3
 문제를 해결하시오.
 ```{r}
-str(airquality)
-#온도 단위는 int
-max(airquality$Wind)
-airquality$wind
+?airquality # 뉴욕
 ```
-
+## 단원문제 4
+```{r}
+str(airquality) # 온도 단위는 int
+```
+## 단원문제 5
+```{r}
+max(airquality$Wind) #20.7이 가장 높은 값임을 알 수 있음
+subset(airquality, Wind==20.7) #17일
+```
+## 단원문제 6
+```{r}
+sum(is.na(airquality)) #44개 포함
+```
+## 단원문제 7
+```{r}
+?quakes # 피지 
+```
+## 단원문제 8
+```{r}
+max(quakes$mag) #6.4
+```
 
