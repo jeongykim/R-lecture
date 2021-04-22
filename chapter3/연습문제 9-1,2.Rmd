@@ -35,7 +35,13 @@ intersect(x,y)
 sum(intersect(x,y))
 ```
 
-## 단원문제 3
+## 단원문제 4
 문제를 해결하시오.
+```{r}
+str(airquality)
+#온도 단위는 int
+max(airquality$Wind)
+airquality$wind
+```
 
 
