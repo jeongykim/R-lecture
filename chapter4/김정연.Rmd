@@ -1,0 +1,60 @@
+---
+title: "Chapter4단원문제"
+author: "kimjy"
+date: '2021 4 23 '
+output: html_document
+---
+
+## 단원문제 146p - 01번
+```{r}
+#방법 1 반복문을 사용하지 않고
+x=c(1:100)
+x=x[x%%3==0 & x%%4!=0]
+sum(x)
+
+#방법 2 반복문을 사용하고 
+sum <- 0
+for (i in 1:100){
+  if(i%%3==0 & i%%4!=0) {
+    sum <- sum+i
+  }
+}
+print(sum)
+```
+## 단원문제 146p - 02번
+```{r}
+plus <- function(x,n){
+    sum <- 0
+    for(i in 1:n){
+        if(i %% x == 0){
+            sum <- sum + i
+        }
+    }
+    return(sum)
+}
+plus(4,10)
+```
+## 단원문제 146p -03번
+```{r}
+#install.packages("hflights")
+library(hflights)
+sum(is.na(hflights))
+#25755개
+```
+
+## 단원문제 146p -04번
+```{r}
+max(hflights$AirTime,na.rm = T) 
+#549분
+```
+## 단원문제 146p -05번
+```{r}
+max(hflights$Distance,na.rm = T) 
+#3904 마일
+```
+## 단원문제 146p -06번
+```{r}
+sum(hflights$Cancelled,na.rm = T)
+#2973건
+```
+
