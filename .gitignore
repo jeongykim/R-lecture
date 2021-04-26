@@ -45,3 +45,4 @@ docs/
 po/*~
 
 # NHIS 파일 배제
+NHIS/
