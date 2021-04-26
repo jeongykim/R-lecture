@@ -44,5 +44,3 @@ docs/
 # translation temp files
 po/*~
 
-# NHIS 파일 배제
-NHIS/
