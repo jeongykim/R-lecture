@@ -1,0 +1,75 @@
+---
+title: "5장 단원문제 & 연습문제"
+author: "kimjy"
+date: '2021 4 26 '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 5단원 단원문제 1
+```{r}
+library(dplyr)
+getwd()
+setwd("/workspace/r")
+getwd()
+NHIS2002 <- read.csv('NHIS/NHIS_OPEN_GJ_2002_v1.csv')
+NHIS2003 <- read.csv('NHIS/NHIS_OPEN_GJ_2003_v1.csv')
+NHIS2004 <- read.csv('NHIS/NHIS_OPEN_GJ_2004_v1.csv')
+NHIS2005 <- read.csv('NHIS/NHIS_OPEN_GJ_2005_v1.csv')
+NHIS2006 <- read.csv('NHIS/NHIS_OPEN_GJ_2006_v1.csv')
+NHIS2007 <- read.csv('NHIS/NHIS_OPEN_GJ_2007_v1.csv')
+NHIS2008 <- read.csv('NHIS/NHIS_OPEN_GJ_2008_v1.csv')
+NHIS2009 <- read.csv('NHIS/NHIS_OPEN_GJ_2009_v1.csv')
+NHIS2010 <- read.csv('NHIS/NHIS_OPEN_GJ_2010_v1.csv')
+NHIS2011 <- read.csv('NHIS/NHIS_OPEN_GJ_2011_v1.csv')
+NHIS2012 <- read.csv('NHIS/NHIS_OPEN_GJ_2012_v1.csv')
+NHIS2013 <- read.csv('NHIS/NHIS_OPEN_GJ_2013_v1.csv')
+NHIS2014 <- read.csv('NHIS/NHIS_OPEN_GJ_2014_v1.csv')
+NHIS2015 <- read.csv('NHIS/NHIS_OPEN_GJ_2015_v1.csv')
+NHIS2016 <- read.csv('NHIS/NHIS_OPEN_GJ_2016_v1.csv')
+```
+## 5단원 단원문제 2
+```{r}
+sum(is.na(NHIS2002)) # 결측값 25090
+NHIS2002_omit <- na.omit(NHIS2002) # 결측값 제외
+NHIS2002_omit$성별 <- ifelse(NHIS2002_omit$성별코드== '1','남자','여자')
+NHIS2002_omit$연령대 <- ifelse(NHIS2002_omit$연령대코드.5세단위.== '1','0~4세',
+                            ifelse(NHIS2002_omit$연령대코드.5세단위.== '2','5~9세',
+                                   ifelse(NHIS2002_omit$연령대코드.5세단위.== '3','10~14세',
+                                          ifelse(NHIS2002_omit$연령대코드.5세단위.== '4','15~19세',
+                                                 ifelse(NHIS2002_omit$연령대코드.5세단위.== '5','20~24세',
+                                                        ifelse(NHIS2002_omit$연령대코드.5세단위.== '6','25~29세',
+                                                               ifelse(NHIS2002_omit$연령대코드.5세단위.== '7','30~34세',
+                                                                      ifelse(NHIS2002_omit$연령대코드.5세단위.== '8','35~39세',
+                                                                             ifelse(NHIS2002_omit$연령대코드.5세단위.== '9','40~44세',
+                                                                                    ifelse(NHIS2002_omit$연령대코드.5세단위.== '10','45~49세',
+                                                                                           ifelse(NHIS2002_omit$연령대코드.5세단위.== '11','50~54세',
+                                                                                                  ifelse(NHIS2002_omit$연령대코드.5세단위.== '12','55~59세',
+                                                                                                         ifelse(NHIS2002_omit$연령대코드.5세단위.== '13','60~64세',
+                                                                                                                ifelse(NHIS2002_omit$연령대코드.5세단위.== '14','65~69세',
+                                                                                                                       ifelse(NHIS2002_omit$연령대코드.5세단위.== '15','70~74세',
+                                                                                                                              ifelse(NHIS2002_omit$연령대코드.5세단위.== '16','75~79세',
+                                                                                                                                     ifelse(NHIS2002_omit$연령대코드.5세단위.== '17','80~84세','85세+')))))))))))))))))
+NHIS2002_omit$시도 <- ifelse(NHIS2002_omit$시도코드=='11','서울특별시',
+                           ifelse(NHIS2002_omit$시도코드=='26','부산광역시',
+                                  ifelse(NHIS2002_omit$시도코드=='27','대구광역시',
+                                         ifelse(NHIS2002_omit$시도코드=='28','인천광역시',
+                                                ifelse(NHIS2002_omit$시도코드=='29','광주광역시',
+                                                       ifelse(NHIS2002_omit$시도코드=='30','대전광역시',
+                                                              ifelse(NHIS2002_omit$시도코드=='31','울산광역시',
+                                                                     ifelse(NHIS2002_omit$시도코드=='36','세종특별자치시',
+                                                                            ifelse(NHIS2002_omit$시도코드=='41','경기도',
+                                                                                   ifelse(NHIS2002_omit$시도코드=='42','강원도',
+                                                                                          ifelse(NHIS2002_omit$시도코드=='43','충청북도',
+                                                                                                 ifelse(NHIS2002_omit$시도코드=='44','충청남도',
+                                                                                                        ifelse(NHIS2002_omit$시도코드=='45','전라북도',
+                                                                                                               ifelse(NHIS2002_omit$시도코드=='46','전라남도',
+                                                                                                                      ifelse(NHIS2002_omit$시도코드=='47','경상북도',
+                                                                                                                             ifelse(NHIS2002_omit$시도코드=='48','경상남도', '제주특별자치도'))))))))))))))))
+                                                                                                                                    
+summary(NHIS2002_omit[,c(3,4,5,30,31,32)])
+```
+
