@@ -1,0 +1,114 @@
+---
+title: "5장 연습문제"
+author: "kimjy"
+date: '2021 4 26 '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 5장 연습문제 1
+```{r}
+library(ggplot2)
+library(dplyr)
+#4이하인 자동차
+
+filter_4 <- mpg %>% filter(displ<=4)
+mean(filter_4$hwy)
+#25.96319
+
+#5이상인 자동차 
+filter_5 <- mpg %>% filter(displ>=5)
+mean(filter_5$hwy)
+#18.07895
+
+mpg %>% 
+  mutate(displ45=ifelse(displ<=4,"DISPL4","DISPL5")) %>% 
+  group_by(displ45) %>% 
+  summarise(avg_hwy=mean(hwy)) %>% 
+  arrange(desc(avg_hwy))
+```
+## 5장 연습문제 2
+```{r}
+mpg %>% 
+  filter(manufacturer %in% c('audi', 'toyota')) %>% 
+  group_by(manufacturer) %>% 
+  summarise(avg_cty=mean(cty)) %>% 
+  arrange(desc(avg_cty))
+```
+## 5장 연습문제 3
+```{r}
+mpg %>% 
+  filter(manufacturer %in% c('chevrolet', 'ford','honda')) %>% 
+  group_by(manufacturer) %>% 
+  summarise(avg_hwy=mean(hwy)) %>% 
+  arrange(desc(avg_hwy))
+```
+## 5장 연습문제 4
+```{r}
+df_mpg <- select(mpg, class,cty)
+```
+## 5장 연습문제 5
+```{r}
+df_mpg %>% 
+  filter(class %in% c('suv', 'compact')) %>% 
+  group_by(class) %>% 
+  summarise(cty_avg=mean(cty)) 
+```
+## 5장 연습문제 6
+```{r}
+mpg %>% 
+  filter(manufacturer == 'audi') %>% 
+  group_by(model) %>% 
+  select(model,hwy) %>% 
+  arrange(desc(hwy)) %>% 
+  head(5)
+```
+
+## 5장 연습문제 7
+```{r}
+#1)
+mpg_2 <- mpg
+mpg_2$합산연비변수 <- mpg_2$cty + mpg_2$hwy 
+#2)
+mpg_2$평균연비변수 <- (mpg_2$cty + mpg_2$hwy)/2
+#3)
+mpg_2 %>% 
+  group_by(manufacturer) %>% 
+  arrange(desc(평균연비변수)) %>% 
+  select(manufacturer,평균연비변수) %>% 
+  head(3)
+#4)
+mpg %>% 
+  mutate(합산연비변수 = mpg$cty + mpg$hwy, 평균연비변수 = (mpg$cty + mpg$hwy)/2) %>% 
+  group_by(manufacturer) %>% 
+  arrange(desc(평균연비변수)) %>% 
+  select(manufacturer,평균연비변수) %>% 
+  head(3)
+```
+## 5장 연습문제 8
+```{r}
+summarize(group_by(mpg,class), cty_avg=mean(cty))
+```
+## 5장 연습문제 9
+```{r}
+summarize(group_by(mpg,class), cty_avg=mean(cty)) %>% 
+  arrange(desc(cty_avg))
+```
+## 5장 연습문제 10
+```{r}
+summarise(group_by(mpg,manufacturer), hwy_avg=mean(hwy)) %>% 
+    arrange(desc(hwy_avg)) %>% 
+    head(3)
+```
+## 5장 연습문제 11
+```{r}
+mpg %>% 
+  filter(class=='compact') %>% 
+  group_by(manufacturer) %>% 
+  summarise(count=n()) %>% 
+  arrange(desc(count))
+```
+
