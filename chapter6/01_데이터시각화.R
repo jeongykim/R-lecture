@@ -29,3 +29,11 @@ for (i in 1:4){
 # 요약값 보기
 summary(anscombe)
 
+library(gapminder)
+library(dplyr)
+y <- gapminder %>% 
+  group_by(year,continent) %>% 
+  summarise(c_pop=sum(pop))
+head(y,20)
+plot(y$year, y$c_pop)
+plot(y$year, y$c_pop, col=y$continent)
