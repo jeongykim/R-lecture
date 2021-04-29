@@ -35,12 +35,12 @@ barplot(gap2$pop,names.arg=gap2$country)
 ```{r}
 library(dplyr)
 for (i in 1:length(unique(gapminder$year))){
-  print(i)
+  print(i) # 오류가 날때 몇번째에서 오류나는지 보기위해서
   gap2 <- gapminder %>%
     filter(year==unique(gapminder$year)[i]) %>% 
     arrange(desc(pop)) %>% 
     head()
-pie(gap2$pop/10000,gap2$country, main = unique(gapminder$year)[i] ) 
+pie(as.numeric(gap2$pop),gap2$country, main = unique(gapminder$year)[i] ) #as.numeric을 써주는 이유는 숫자값이 너무 커서 정수형이 다 표현을 못함, 그렇기 때문에 실수형으로 변환해서 모든 숫자를 표현하게 해준다.
 barplot(gap2$pop,names.arg=gap2$country, main = unique(gapminder$year)[i])
 }
 ```
@@ -50,23 +50,67 @@ barplot(gap2$pop,names.arg=gap2$country, main = unique(gapminder$year)[i])
 중국과 인도, 미국은 1952~ 2007년 동안 순위의 변동이 없었다.
 또한 일본은 1957년까지는 3위에 위치해 있다가 점점 내려갔다.
 
+## 단원문제 2 - (1)
+```{r}
+library(tidyr)
+library(ggplot2)
+# 2-1 airquality
+head(airquality)
+air_tidy <- gather(airquality,key='Measure',value='Value',
+                   -Day,-Month)
+head(air_tidy)
+tail(air_tidy)
+dim(airquality)
+dim(air_tidy)
 
-## 단원문제 3 - (1)
+air_tidy %>% 
+  ggplot(aes(Day,Value, col=Measure))+
+  geom_point() +
+  geom_line() +
+  facet_wrap(~Month)
+```
+
+
+
+
+## 단원문제 2 - (2)
+```{r}
+iris_tidy <- gather(iris, key='feat', value = 'value',
+                    -Species)
+head(iris_tidy)
+tail(iris_tidy)
+iris_tidy %>% 
+  ggplot(aes(feat,value,col=Species)) +
+  geom_point(position='jitter')
+```
+
+## 연습문제 3 - (1)
 
 ```{r}
 library(ggplot2)
-ggplot(iris,aes(Sepal.Length,Sepal.Width, col=Species))+
+library(gridExtra)
+seto <- filter(iris, Species=='setosa')
+vers <- filter(iris, Species=='versicolor')
+virg <- filter(iris, Species=='virginica')
+a1<- seto %>% 
+  ggplot(aes(Sepal.Length,Sepal.Width, col=Species))+
   geom_point(alpha=5)
-ggplot(iris,aes(Sepal.Length,Petal.Length, col=Species))+
+a2<- seto %>% 
+  ggplot(aes(Petal.Length,Petal.Width, col=Species))+
   geom_point(alpha=5)
-ggplot(iris,aes(Sepal.Length,Petal.Width, col=Species))+
+a3<- vers %>% 
+  ggplot(aes(Sepal.Length,Sepal.Width, col=Species))+
   geom_point(alpha=5)
-ggplot(iris,aes(Sepal.Width,Petal.Length, col=Species))+
+a4<- vers %>% 
+  ggplot(aes(Petal.Length,Petal.Width, col=Species))+
   geom_point(alpha=5)
-ggplot(iris,aes(Sepal.Width,Petal.Width, col=Species))+
+a5<- virg %>% 
+  ggplot(aes(Sepal.Length,Sepal.Width, col=Species))+
   geom_point(alpha=5)
-ggplot(iris,aes(Petal.Length,Petal.Width, col=Species))+
+a6<- virg %>% 
+  ggplot(aes(Petal.Length,Petal.Width, col=Species))+
   geom_point(alpha=5)
+grid.arrange(a1,a2,a3,a4,a5,a6,nrow=3, ncol=2, top="iris plot")
 ```
 
 
@@ -74,7 +118,7 @@ ggplot(iris,aes(Petal.Length,Petal.Width, col=Species))+
 
 
 
-## 단원문제 3 - (2)
+## 연습문제 3 - (2)
 
 ```{r}
 library(dplyr)
@@ -88,11 +132,64 @@ legend('topright',legend = c("setosa","versicolor","virginica"),cex=0.8, fill=ra
 barplot(as.matrix(iris_df[,c(2,3,4,5)]),main="각 꽃의 평균 비교",
         beside=F, col=rainbow(nrow(iris_df)),ylim=c(0,20),)
 legend('topright',legend = c("setosa","versicolor","virginica"),cex=0.8, fill=rainbow(nrow(iris_df)))
+
+#ggplot으로 그리기
+df <- iris %>% 
+  group_by(Species) %>% 
+  summarise(mean_sL=mean(Sepal.Length),mean_sW=mean(Sepal.Width),mean_pL=mean(Petal.Length),mean_pW=mean(Petal.Width))
+df
+df_tidy <- gather(df, key='Feature',value = 'Value',-Species)
+df_tidy
+ggplot(df_tidy, aes(x=Feature, y=Value,col=Species)) +  #col은 테두리 색깔
+  geom_bar(stat='identity')
+ggplot(df_tidy, aes(x=Feature, y=Value,fill=Species)) + #fill은 채워넣는 색깔
+  geom_bar(stat='identity')
+ggplot(df_tidy, aes(x=Feature, y=Value,fill=Species)) +
+  geom_bar(stat='identity',position = 'dodge')
 ```
 
-## 단원문제 3 - (3)
+## 연습문제 3 - (3)
 ```{r}
-boxplot(iris)
+# 3-3
+# boxplot
+par(mfrow=c(3,1))
+boxplot(seto$Sepal.Length, seto$Sepal.Width,
+        seto$Petal.Length, seto$Petal.Width,
+        col=c('red','yellow','green','blue'),
+        names=c('Sepal.Length','Sepal.Width','Petal.Length','Petal.Width'),
+        main='Setosa')
+boxplot(vers$Sepal.Length, vers$Sepal.Width,
+        vers$Petal.Length, vers$Petal.Width,
+        col=c('red','yellow','green','blue'),
+        names=c('Sepal.Length','Sepal.Width','Petal.Length','Petal.Width'),
+        main='Versicolor')
+boxplot(virg$Sepal.Length, virg$Sepal.Width,
+        virg$Petal.Length, virg$Petal.Width,
+        col=c('red','yellow','green','blue'),
+        names=c('Sepal.Length','Sepal.Width','Petal.Length','Petal.Width'),
+        main='Virginica')
+par(mfrow=c(1,1))
+
+# ggplot
+seto_tidy <- gather(seto, key='Feature', value='Value', -Species)
+head(seto_tidy)
+s1 <- seto_tidy %>% 
+    ggplot(aes(x=Feature,y=Value,col=Feature)) +
+    geom_boxplot() +
+    ggtitle('Setosa')
+s1
+
+vers_tidy <- gather(vers, key='Feature', value='Value', -Species)
+virg_tidy <- gather(virg, key='Feature', value='Value', -Species)
+s2 <- vers_tidy %>% 
+    ggplot(aes(x=Feature,y=Value,col=Feature)) +
+    geom_boxplot() +
+    ggtitle('Versicolor')
+s3 <- virg_tidy %>% 
+    ggplot(aes(x=Feature,y=Value,col=Feature)) +
+    geom_boxplot() +
+    ggtitle('Virginica')
+grid.arrange(s1,s2,s3, ncol=1)
 ```
 
 
