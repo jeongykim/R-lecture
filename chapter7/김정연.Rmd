@@ -1,0 +1,86 @@
+---
+title: "galton"
+author: "kimjy"
+date: '2021 4 29 '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 자료 파악하기
+
+```{r}
+# Galton 선형회귀
+library(dplyr)
+library(ggplot2)
+df <- read.csv('http://www.randomservices.org/random/data/Galton.txt',
+               sep='\t')
+head(df)
+#자료를 요약해서 봤더니 아버지와 아이의 키 수치를 조정해야 함.
+```
+<br>
+
+## 모델링 하기
+
+```{r}
+# 아버지와 아들의 키
+galton <- df %>% 
+    filter(Gender == 'M') %>% 
+    mutate(father=2.54*Father, son=2.54*Height)
+head(galton)
+
+ggplot(galton, aes(father, son)) +
+    geom_point(position='jitter', color='darkorange')
+
+model <- lm(son~father, data=galton)
+coef(model)
+ggplot(galton, aes(father, son)) +
+  geom_point(position='jitter', color='darkorange') +
+  geom_abline(intercept=coef(model)[1], slope=coef(model)[2], 
+              color='darkblue', size=1)
+```
+
+<br>
+
+## 잔차 분석하기
+
+```{r}
+par(mfrow=c(2,2))
+plot(model)
+par(mfrow=c(1,1))
+#잔차 분석을 해본 결과 4가지의 요건을 만족하여 자료가 타당하다는 것을 보여준다.
+```
+
+<br>
+
+## 요약값 해석하기
+```{r}
+summary(model)
+# 아버지의 유의확률이 <2e-16의 수치로 0.05보다 작은 수를 나타냄으로 유의한 변수로 해석된다.
+# 수정결정계수의 값은 15.13%로 설명력이 매우 떨어진다고 볼 수 있다.
+```
+
+
+<br>
+
+## 
+```{r}
+# 다차식 회귀
+x <- seq(min(galton$father), max(galton$father), length.out=1000)
+plot(jitter(galton$father), jitter(galton$son),
+     xlab='Father', ylab='Son')
+colors <- c('red','purple','darkorange','blue')
+for (i in 1:4) {
+    plot(jitter(galton$father), jitter(galton$son),
+         xlab='Father', ylab='Son')
+    m <- lm(son ~ poly(father, i), data=galton)
+    assign(paste('m', i, sep='.'), m)
+    y <- predict(m, data.frame(father=x))
+    lines(x, y, col=colors[i], lwd=2)
+}
+anova(m.1, m.2, m.3, m.4)
+#다차식 회귀 결과 4차식까지 변수를 늘리면 유의한 변수가 나오지 않으므로 의미가 없다. 따라서 1차식으로 사용한 식이 가장 적합하다고 할 수 있다.
+```
+
