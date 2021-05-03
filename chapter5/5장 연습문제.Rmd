@@ -11,6 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## 5장 연습문제 1
 ```{r}
+#install.packages("ggplot2")
 library(ggplot2)
 library(dplyr)
 #4이하인 자동차
@@ -42,20 +43,21 @@ mpg %>%
 ```{r}
 mpg %>% 
   filter(manufacturer %in% c('chevrolet', 'ford','honda')) %>% 
-  group_by(manufacturer) %>% 
   summarise(avg_hwy=mean(hwy)) %>% 
   arrange(desc(avg_hwy))
 ```
 ## 5장 연습문제 4
 ```{r}
 df_mpg <- select(mpg, class,cty)
+head(df_mpg)
 ```
 ## 5장 연습문제 5
 ```{r}
 df_mpg %>% 
   filter(class %in% c('suv', 'compact')) %>% 
   group_by(class) %>% 
-  summarise(cty_avg=mean(cty)) 
+  summarise(cty_avg=mean(cty)) %>% 
+  arrange(desc(cty_avg))
 ```
 ## 5장 연습문제 6
 ```{r}
@@ -108,7 +110,7 @@ summarise(group_by(mpg,manufacturer), hwy_avg=mean(hwy)) %>%
 mpg %>% 
   filter(class=='compact') %>% 
   group_by(manufacturer) %>% 
-  summarise(count=n()) %>% 
-  arrange(desc(count))
+  summarise(num_kind=n()) %>% # -행의 개수
+  arrange(desc(num_kind))
 ```
 
