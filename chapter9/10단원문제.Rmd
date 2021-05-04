@@ -1,0 +1,118 @@
+---
+title: "10practico"
+author: "kimjy"
+date: '2021 5 4 '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+<br>
+
+## 단원문제 1
+```{r}
+#install.packages("survival")
+library(survival)
+str(colon)
+#데이터 전처리
+clean_colon = na.omit(colon)
+clean_colon = clean_colon[c(TRUE,FALSE),]
+clean_colon$status <- factor(clean_colon$status)
+str(clean_colon)
+
+library(caret)
+control_5 <-trainControl(method = 'cv', number=5)       # 5-겹 교차 검증 지정
+rf_5 <- train(status~., data= clean_colon, method='rf',   
+                metric='Accuracy', trControl=control_5) 
+
+control_10 <-trainControl(method = 'cv', number=10)       # 10-겹 교차 검증 지정
+rf_10 <- train(status~., data= clean_colon, method='rf',   
+                metric='Accuracy', trControl=control_10) 
+
+control_15 <-trainControl(method = 'cv', number=15)       # 15-겹 교차 검증 지정
+rf_15 <- train(status~., data= clean_colon, method='rf',   
+                metric='Accuracy', trControl=control_15) 
+
+control_20 <-trainControl(method = 'cv', number=20)       # 20-겹 교차 검증 지정
+rf_20 <- train(status~., data= clean_colon, method='rf',   
+                metric='Accuracy', trControl=control_20) 
+
+confusionMatrix(rf_5)  #5 교차 검증- Accuracy (average) 
+confusionMatrix(rf_5)$table[2,2]/(confusionMatrix(rf_5)$table[2,1]+confusionMatrix(rf_5)$table[2,2]) #5 교차 검증-정밀도 
+confusionMatrix(rf_5)$table[2,2]/(confusionMatrix(rf_5)$table[1,2]+confusionMatrix(rf_5)$table[2,2]) #5 교차 검증-재현률 
+confusionMatrix(rf_10)  #10 교차 검증-Accuracy (average)  
+confusionMatrix(rf_10)$table[2,2]/(confusionMatrix(rf_10)$table[2,1]+confusionMatrix(rf_10)$table[2,2]) #10 교차 검증-정밀도 
+confusionMatrix(rf_10)$table[2,2]/(confusionMatrix(rf_10)$table[1,2]+confusionMatrix(rf_10)$table[2,2]) #10 교차 검증-재현률 
+confusionMatrix(rf_15)  #15 교차 검증-Accuracy (average) 
+confusionMatrix(rf_15)$table[2,2]/(confusionMatrix(rf_15)$table[2,1]+confusionMatrix(rf_15)$table[2,2]) #15 교차 검증-정밀도 
+confusionMatrix(rf_15)$table[2,2]/(confusionMatrix(rf_15)$table[1,2]+confusionMatrix(rf_15)$table[2,2]) #15 교차 검증-재현률 
+confusionMatrix(rf_20)  #20 교차 검증-Accuracy (average) 
+confusionMatrix(rf_20)$table[2,2]/(confusionMatrix(rf_20)$table[2,1]+confusionMatrix(rf_20)$table[2,2]) #20 교차 검증-정밀도 
+confusionMatrix(rf_20)$table[2,2]/(confusionMatrix(rf_20)$table[1,2]+confusionMatrix(rf_20)$table[2,2]) #20 교차 검증-재현률 
+
+```
+
+<br>
+
+## 연습문제 2
+```{r}
+ucla <-  read.csv('https://stats.idre.ucla.edu/stat/data/binary.csv')
+ucla$admit <- factor(ucla$admit)
+control_u <-trainControl(method = 'cv', number=10) 
+folmular_u= admit~.
+L_u= train(folmular_u, data=ucla, method='svmLinear', metric='Accuracy', trControl=control_u)
+LW_u= train(folmular_u, data=ucla, method='svmLinearWeights', metric='Accuracy', trControl=control_u)
+P_u= train(folmular_u, data=ucla, method='svmPoly', metric='Accuracy', trControl=control_u)
+R_u= train(folmular_u, data=ucla, method='svmRadial', metric='Accuracy', trControl=control_u)
+RW_u= train(folmular_u, data=ucla, method='svmRadialWeights', metric='Accuracy', trControl=control_u)
+f100=train(folmular_u, data=ucla, method='rf', ntree=100, metric='Accuracy', trControl=control_u)
+f300=train(folmular_u, data=ucla, method='rf', ntree=300, metric='Accuracy', trControl=control_u)
+f500=train(folmular_u, data=ucla, method='rf', ntree=500, metric='Accuracy', trControl=control_u)
+r_u= train(folmular_u, data=ucla, method='rpart', metric='Accuracy', trControl=control_u)
+k_u= train(folmular_u, data=ucla, method='knn', metric='Accuracy', trControl=control_u)
+g_u= train(folmular_u, data=ucla, method='glm', metric='Accuracy', trControl=control_u)
+
+resamp_u= resamples(list(선형=L_u, 선형가중치=LW_u, 다항식=P_u, RBF=R_u, 가중치=RW_u, rf100=f100, rf300=f300, rf500=f500, tree=r_u, knn=k_u, glm=g_u))
+summary(resamp_u)
+
+#가장 좋은 모델 순서로 뽑기
+sort(resamp_u, dcreasing=TRUE)
+#모델 성능 시각화
+dotplot(resamp_u)
+```
+
+<br>
+
+## 단원문제 3
+```{r}
+getwd()
+setwd('/Workspace/R/data')
+getwd()
+voice <- read.csv("voice.csv")
+head(voice)
+voice$label <- factor(voice$label)
+str(voice)
+control_v <-trainControl(method = 'cv', number=10) 
+folmular_v= label~.
+L_v= train(folmular_v, voice, method='svmLinear', metric='Accuracy', trControl=control_v)
+LW_v= train(folmular_v, voice, method='svmLinearWeights', metric='Accuracy', trControl=control_v)
+P_v= train(folmular_v, voice, method='svmPoly', metric='Accuracy', trControl=control_v)
+R_v= train(folmular_v, voice, method='svmRadial', metric='Accuracy', trControl=control_v)
+RW_v= train(folmular_v, voice, method='svmRadialWeights', metric='Accuracy', trControl=control_v)
+f100=train(folmular_v, voice, method='rf', ntree=100, metric='Accuracy', trControl=control_v)
+f300=train(folmular_v, voice, method='rf', ntree=300, metric='Accuracy', trControl=control_v)
+f500=train(folmular_v, voice, method='rf', ntree=500, metric='Accuracy', trControl=control_v)
+r_v= train(folmular_v, voice, method='rpart', metric='Accuracy', trControl=control_v)
+k_v= train(folmular_v, voice, method='knn', metric='Accuracy', trControl=control_v)
+g_v= train(folmular_v, data=voice, method='glm', metric='Accuracy', trControl=control_v)
+
+resamp_v= resamples(list(선형=L_v, 선형가중치=LW_v, 다항식=P_v, RBF=R_v, 가중치=RW_v, rf100=f100, rf300=f300, rf500=f500, tree=r_v, knn=k_v, glm=g_v))
+summary(resamp_v)
+
+#가장 좋은 모델 순서로 뽑기 
+sort(resamp_v, dcreasing=TRUE)
+#모델 성능 시각화
+dotplot(resamp_v)
+```
+
